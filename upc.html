@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <title>Document</title>
+    <style>
+        .input-container{
+            text-align: center;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 18px;
+        }
+        input {
+            margin-bottom: 5px;
+            height: 4vh;
+            width: 25vw;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #0c7489;
+            color: white;
+            padding: 5px;
+        }
+
+        button:hover {
+            background-color: #0a5563;
+        }
+
+    </style>
+    <script>
+        $(document).ready( function () {
+            $('button').on('click', function(){
+                handleInput();
+            });
+        });
+
+        const calculateCheckDigit = (array) => {
+            let newArray = array.slice();
+            newArray = newArray.splice(0, 11);
+            let evenNum = 0;
+            let oddNum = 0;
+            let checkDigit = null;
+            for(let i = 0; i < newArray.length; i++){
+                if([i]%2 === 0){
+                    oddNum += parseInt(newArray[i]); //technically even number index but index starts at zero so had to do inverse
+                } else {
+                    evenNum += parseInt(newArray[i]); //technically odd number index but index starts at zero so had to do inverse
+                }
+            }   let oddMultiplier = oddNum * 3;
+                let total = oddMultiplier + evenNum;
+                let modulusResult = total%10;
+                if(modulusResult !== 0){
+                    checkDigit = 10 - modulusResult;
+                } else {
+                    checkDigit = 0;
+                }
+                newArray.push(checkDigit);
+                return newArray;
+        };
+
+        const handleInput = () => {
+            const output = $('.output-text');
+            const inputValue = $('input').val();
+            const inputArray = inputValue.split("");
+            for(let i = 0; i< inputArray.length; i++){
+                if(inputArray.length !== 12){
+                    return (output).text("Please enter a valid 12 digit UPC code").css('color', 'red');
+                } else if (isNaN(inputArray[i])){
+                    return (output).text("Valid numbers only")
+                }
+            }
+            console.log(inputArray);
+            const newArray = calculateCheckDigit(inputArray);
+            if(newArray[newArray.length-1] === parseInt(inputArray[inputArray.length-1])){
+                (output).text("Valid UPC code!");
+            } else {
+                (output).text("Invalid UPC code, please try again");
+            }
+        };
+
+    </script>
+</head>
+<body>
+    <div class="input-container">
+        <input placeholder="enter upc #">
+        <button>Check UPC</button>
+        <div class="output-text"></div>
+    </div>
+
+</body>
+</html>
